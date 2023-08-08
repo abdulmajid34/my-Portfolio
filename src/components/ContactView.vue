@@ -1,26 +1,26 @@
-<script setup>
-const scriptURL =
-        'https://script.google.com/macros/s/AKfycbzj5JceFGwVxiVSsXE_sxG9dvT0a1SDyeS28ZCPY-nkXbQhh3UaPxZBsOnnReDqvHXH/exec'
-    const form = document.forms['my-portfolio-form']
-    const btnKirim = document.querySelector('.btn-kirim');
-    const btnLoading = document.querySelector('.btn-loading');
+<script>    
+    import { defineComponent } from 'vue';
+    import { useContactFormStore } from '../stores/contact_module';
+    export default defineComponent ({
+        name: 'ContactView',
+        setup() {
 
-    function submit_form(e) {
-        e.preventDefault()
+            const contactStore = useContactFormStore();
 
-        btnLoading.classList.toogle('d-none')
-        btnKirim.classList.toogle('d-none')
-        fetch(scriptURL, {
-                method: 'POST',
-                body: new FormData(form)
-            })
-            .then(response => {
-                btnLoading.classList.toogle('d-none')
-                btnKirim.classList.toogle('d-none')
-                console.log('Success!', response)
-            })
-            .catch(error => console.error('Error!', error.message))
-    }
+            const submit_form = async () => {
+                try { 
+                    const form = document.forms['form-contact']                                 
+                    await contactStore.submit_form_contact(form);
+                } catch(err) {
+                    console.log(err);
+                }
+            };
+
+            return {
+                submit_form
+            }
+        }
+    })
 </script>
 
 <template>
@@ -37,7 +37,7 @@ const scriptURL =
                         <strong>Terima Kasih!</strong>Pesan anda sudah kami terima.
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    <form name="my-portfolio-form">
+                    <form @submit.prevent="submit_form" id="contact-submit-form" name="form-contact">
                         <div class="mb-3">
                             <label for="name" class="form-label">Nama Lengkap</label>
                             <input type="text" class="form-control" v-model="nama" name="nama" id="name" aria-describedby="name">
@@ -46,13 +46,12 @@ const scriptURL =
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" class="form-control" v-model="email" name="email" id="email" aria-describedby="email">
-
                         </div>
                         <div class="mb-3">
                             <label for="pesan" class="form-label">Pesan</label>
                             <textarea class="form-control" id="pesan" v-model="pesan" name="pesan" rows="3"></textarea>
                         </div>
-                        <button type="submit" @submit="submit_form" class="btn btn-primary btn-kirim">Submit</button>
+                        <button type="submit"  class="btn btn-primary btn-kirim">Submit</button>
                         <button class="btn btn-primary btn-loading d-none" type="button" disabled>
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                             Loading...
