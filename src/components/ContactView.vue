@@ -9,23 +9,26 @@
 
             const submit_form = async () => {
                 try { 
-                    const form = document.forms['form-contact']                                 
+                    const form = document.forms['form-contact']  
+                    console.log(form, 'Form');                               
                     await contactStore.submit_form_contact(form);
+                    form.reset();
                 } catch(err) {
                     console.log(err);
                 }
             };
 
             return {
-                submit_form
+                submit_form,
+                contactStore
             }
         }
     })
 </script>
 
 <template>
-    <section id="contact">
-        <div class="container">
+    <section id="contact" >
+        <div class="container" data-aos="fade-up">
             <div class="row text-center mb-3">
                 <div class="col">
                     <h2>Contact Me</h2>
@@ -33,32 +36,46 @@
             </div>
             <div class="row justify-content-center">
                 <div class="col-md-6">
-                    <div class="d-none my-alert alert alert-success alert-dismissible fade show" role="alert">
-                        <strong>Terima Kasih!</strong>Pesan anda sudah kami terima.
+                    <div v-if="contactStore.isSuccess" class="my-alert alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Thank You! </strong>.We have received your message
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <div v-if="contactStore.isError" class="my-alert alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Ooops! </strong>Your message has a problem, please check again.
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     <form @submit.prevent="submit_form" id="contact-submit-form" name="form-contact">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Nama Lengkap</label>
-                            <input type="text" class="form-control" v-model="nama" name="nama" id="name" aria-describedby="name">
-
-                        </div>
-                        <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" v-model="email" name="email" id="email" aria-describedby="email">
+                            <input type="email" class="form-control" name="email" id="email" aria-describedby="email">
                         </div>
                         <div class="mb-3">
-                            <label for="pesan" class="form-label">Pesan</label>
-                            <textarea class="form-control" id="pesan" v-model="pesan" name="pesan" rows="3"></textarea>
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="3"></textarea>
                         </div>
-                        <button type="submit"  class="btn btn-primary btn-kirim">Submit</button>
-                        <button class="btn btn-primary btn-loading d-none" type="button" disabled>
+                        <button v-if="!contactStore.isLoading" type="submit"  class="btn btn-primary btn-kirim">Submit</button>
+                        <button v-if="contactStore.isLoading" class="btn btn-primary btn-loading" type="button" disabled>
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                             Loading...
                         </button>
                     </form>
                 </div>
             </div>
+        </div>
+
+        <div style="display: flex; justify-content: center; margin-top: 11rem; margin-bottom: 2rem;" data-aos="fade-up">
+            <span >
+                <i class="bi bi-telephone" style="font-size: 40px; padding-right: 20px;"></i> +62 8997558188
+                <br>
+                <i class="bi bi-google" style="font-size: 40px; padding-right: 20px;"></i> abdulmajid08180881@gmail.com
+            </span>
+        </div>
+
+        <div class="style-sosmed" >
+            
+            <a data-aos="fade-right" href="https://www.instagram.com/abdul_majid352/"><i class="bi bi-instagram" style="font-size: 60px; color: black; padding: 0 10px;"></i></a>
+            <a data-aos="fade-down" href="https://www.facebook.com/profile.php?id=100027871082836"><i class="bi bi-facebook" style="font-size: 60px; color: black; padding: 0 10px;"></i></a>
+            <a data-aos="fade-left" href="https://www.linkedin.com/in/abdul-majid-05b3ab195/" class=""><i class="bi bi-linkedin" style="font-size: 60px; color: black; padding: 0 10px;"></i></a>
         </div>
 
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
@@ -72,5 +89,11 @@
 <style scoped>
     #contact {
         padding-top: 5rem;
+    }
+
+    .style-sosmed {
+        display: flex;
+        justify-content: center;
+        
     }
 </style>
